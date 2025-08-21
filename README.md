@@ -1,71 +1,69 @@
-# Assets Directory Structure
+# React + TypeScript + Vite
 
-## How to Add Your Images and Icons
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-### 1. Directory Structure
-Place your files in these folders:
+Currently, two official plugins are available:
 
-```
-client/public/assets/
-├── icons/
-│   ├── camera-icon.png          (Camera button icon)
-│   ├── add-icon.png             (Add item + button)
-│   ├── info-icon.png            (Info button icon)
-│   ├── play-icon.png            (Play shop button icon)
-│   ├── clear-icon.png           (Clear cart icon)
-│   ├── money-icon.png           (Get $$$ button icon)
-│   ├── retry-icon.png           (Camera retry icon)
-│   ├── done-icon.png            (Camera done checkmark)
-│   └── close-icon.png           (Close/back icons)
-├── images/
-│   ├── backgrounds/
-│   │   ├── home-bg.png          (Home screen background)
-│   │   ├── celebration-bg.png   (Celebration background)
-│   │   └── camera-overlay.png   (Camera frame overlay)
-│   └── decorative/
-│       ├── confetti.png         (Confetti elements)
-│       └── money-bills.png      (Money bill graphics)
-└── characters/
-    ├── happy-kid-1.png          (Celebration character 1)
-    ├── happy-kid-2.png          (Celebration character 2)
-    └── shop-keeper.png          (Shop keeper character)
-```
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-### 2. How to Reference Your Images in Code
+## Expanding the ESLint configuration
 
-Once you place files in the assets folder, reference them like this:
+If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
 
-```javascript
-// For icons
-<img src="/assets/icons/camera-icon.png" alt="Camera" />
+```js
+export default tseslint.config([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
 
-// For background images
-<div style={{ backgroundImage: 'url(/assets/images/backgrounds/home-bg.png)' }}>
+      // Remove tseslint.configs.recommended and replace with this
+      ...tseslint.configs.recommendedTypeChecked,
+      // Alternatively, use this for stricter rules
+      ...tseslint.configs.strictTypeChecked,
+      // Optionally, add this for stylistic rules
+      ...tseslint.configs.stylisticTypeChecked,
 
-// For characters
-<img src="/assets/characters/happy-kid-1.png" alt="Happy kid" />
+      // Other configs...
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
 ```
 
-### 3. File Format Recommendations
+You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
 
-- **Icons**: PNG with transparent background (24x24, 32x32, or 48x48 pixels)
-- **Backgrounds**: PNG or JPG (optimize for mobile - keep under 500KB)
-- **Characters**: PNG with transparent background
-- **Decorative**: PNG with transparency for overlays
+```js
+// eslint.config.js
+import reactX from 'eslint-plugin-react-x'
+import reactDom from 'eslint-plugin-react-dom'
 
-### 4. Quick Start Steps
-
-1. Create the folder structure above in `client/public/assets/`
-2. Drop your PNG files into the appropriate folders
-3. Update the import statements in the component files
-4. Test in the browser to see your custom graphics
-
-### 5. Components That Use Images
-
-- **Home.tsx**: Add item icon, background
-- **Camera.tsx**: Camera icon, retry icon, done icon, close icon
-- **POS.tsx**: Clear icon, money icon
-- **Celebration.tsx**: Characters, confetti, money graphics
-- **Info.tsx**: App icon
-- **ItemSlot.tsx**: Add item placeholder icon
-- **POSItem.tsx**: Uses captured item photos
+export default tseslint.config([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
+      // Enable lint rules for React
+      reactX.configs['recommended-typescript'],
+      // Enable lint rules for React DOM
+      reactDom.configs.recommended,
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
+```
